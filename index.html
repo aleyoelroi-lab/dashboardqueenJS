@@ -4,12 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <meta name="theme-color" content="#0B0F17">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="JS Dashboard">
-    <title>JS Dashboard Generator - Live Web</title>
+    <title>JS Dashboard Generator - Full Web Suite</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        electricBlue: '#38BDF8',
+                        electricCyan: '#00E5FF',
+                        darkSlate: '#0B0F17',
+                        cardSlate: '#111827'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -21,175 +34,631 @@
             padding-bottom: var(--sab);
             -webkit-tap-highlight-color: transparent;
         }
+        .tab-btn.active {
+            color: #38BDF8;
+            border-bottom: 2px solid #38BDF8;
+            font-weight: 700;
+        }
         @media print {
             body { background: white !important; color: black !important; }
             .no-print { display: none !important; }
         }
     </style>
 </head>
-<body id="dashBody" class="bg-[#0B0F17] text-[#F8FAFC] min-h-screen font-sans antialiased transition-colors duration-200">
-    <header class="border-b border-slate-800 bg-[#0B0F17]/95 backdrop-blur sticky top-0 z-50 px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3 no-print">
-        <div class="flex items-center gap-3">
+<body id="dashBody" class="bg-[#0B0F17] text-[#F8FAFC] min-h-screen font-sans antialiased flex flex-col transition-colors duration-200">
+
+    <!-- Top Sticky Header -->
+    <header class="border-b border-slate-800 bg-[#0B0F17]/95 backdrop-blur sticky top-0 z-50 px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3 no-print">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('home')">
             <div class="w-9 h-9 rounded-lg bg-[#38BDF8]/20 border border-[#38BDF8] flex items-center justify-center font-bold text-[#38BDF8] text-lg">
                 JS
             </div>
             <div>
-                <h1 class="text-sm sm:text-base font-bold text-slate-100 tracking-tight">JS (Jeddah San) Dashboard</h1>
-                <p class="text-[11px] text-slate-400">Android • iPhone • iPod • Web Browser</p>
+                <h1 class="text-sm sm:text-base font-bold text-slate-100 tracking-tight">JS (Jeddah San) Dashboard Generator</h1>
+                <p class="text-[11px] text-slate-400">Autonomous Enterprise Analytics Suite</p>
             </div>
         </div>
 
-        <div class="flex items-center flex-wrap gap-2">
-            <button onclick="toggleTheme()" class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/80 text-xs text-slate-300 hover:text-white transition-colors">
-                🌓 Toggle Theme
+        <!-- Navigation Tabs -->
+        <nav class="flex items-center overflow-x-auto gap-1 sm:gap-2 text-xs font-medium">
+            <button onclick="switchTab('home')" id="tab-home" class="tab-btn active px-3 py-2 text-slate-400 hover:text-white transition-colors">🏠 Home</button>
+            <button onclick="switchTab('variations')" id="tab-variations" class="tab-btn px-3 py-2 text-slate-400 hover:text-white transition-colors">🗂️ 5 Variations</button>
+            <button onclick="switchTab('workspace')" id="tab-workspace" class="tab-btn px-3 py-2 text-slate-400 hover:text-white transition-colors">📊 Workspace</button>
+            <button onclick="switchTab('data')" id="tab-data" class="tab-btn px-3 py-2 text-slate-400 hover:text-white transition-colors">💾 Data Ingestion</button>
+            <button onclick="switchTab('webhooks')" id="tab-webhooks" class="tab-btn px-3 py-2 text-slate-400 hover:text-white transition-colors">🔌 WordPress Hooks</button>
+            <button onclick="switchTab('security')" id="tab-security" class="tab-btn px-3 py-2 text-slate-400 hover:text-white transition-colors">🛡️ Security & RBAC</button>
+        </nav>
+
+        <!-- Right Quick Controls -->
+        <div class="flex items-center gap-2">
+            <button onclick="toggleTheme()" class="px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800/80 text-xs text-slate-300 hover:text-white">
+                🌓 Theme
             </button>
-            <button onclick="window.print()" class="px-3 py-1.5 rounded-lg border border-slate-700 hover:border-slate-500 bg-slate-800/80 text-xs font-medium text-slate-200 transition-colors">
-                🖨️ Print / PDF
-            </button>
-            <button onclick="downloadCsv()" class="px-3.5 py-1.5 rounded-lg bg-[#38BDF8] hover:bg-[#0284C7] text-slate-950 text-xs font-bold transition-colors">
-                📊 Export CSV
+            <button onclick="window.print()" class="px-2.5 py-1.5 rounded-lg border border-slate-700 hover:border-slate-500 bg-slate-800/80 text-xs font-medium text-slate-200">
+                🖨️ Print
             </button>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <div class="mb-6 sm:mb-8">
-            <div class="flex flex-wrap items-center gap-2 text-xs font-mono text-[#38BDF8] mb-1">
-                <span>⚡ LIVE SYSTEM ACTIVE</span>
-                <span>•</span>
-                <span class="text-emerald-400">● MULTI-DEVICE RESPONSIVE</span>
-            </div>
-            <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight">Enterprise Autonomous Analytics</h2>
-            <p class="text-xs sm:text-sm text-slate-400 mt-1 max-w-3xl">High-performance cross-platform dashboard for Android, iOS, and Web browsers.</p>
-        </div>
+    <!-- MAIN VIEW CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
-        <div class="grid grid-cols-12 gap-4 sm:gap-6">
-            <div class="col-span-12 sm:col-span-6 lg:col-span-3 bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-lg">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Total Revenue</span>
-                    <span class="text-[11px] px-2 py-0.5 rounded-full font-medium text-emerald-400 bg-slate-800/60 border border-slate-700">+18.4%</span>
-                </div>
-                <div class="mt-4 flex items-baseline gap-2">
-                    <span class="text-2xl sm:text-3xl font-bold tracking-tight text-[#38BDF8]">$124,500</span>
-                    <span class="text-xs sm:text-sm text-slate-400">USD</span>
-                </div>
-                <p class="mt-2 text-[11px] text-slate-500">Gross revenue this period</p>
-            </div>
+        <!-- ================= 1. HOME SCREEN ================= -->
+        <section id="screen-home" class="space-y-8">
+            <div class="bg-gradient-to-r from-slate-900 to-[#111827] border border-slate-800 rounded-2xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+                <div class="relative z-10 max-w-3xl">
+                    <span class="text-xs font-mono text-[#38BDF8] uppercase tracking-widest bg-[#38BDF8]/10 px-2.5 py-1 rounded-full border border-[#38BDF8]/20">⚡ Multi-Platform Autonomous Generator</span>
+                    <h2 class="text-2xl sm:text-4xl font-extrabold text-white mt-4 tracking-tight">Generate 5 Enterprise Dashboard Variations in Seconds</h2>
+                    <p class="text-slate-300 text-sm sm:text-base mt-3 leading-relaxed">
+                        Synthesize interactive prototypes for Android phones, iPhones, iPads, and Web browsers. Connect live CSV, SQL tables, and WordPress webhooks.
+                    </p>
 
-            <div class="col-span-12 sm:col-span-6 lg:col-span-3 bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-lg">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Conversion Rate</span>
-                    <span class="text-[11px] px-2 py-0.5 rounded-full font-medium text-emerald-400 bg-slate-800/60 border border-slate-700">+3.2%</span>
+                    <div class="mt-6 flex flex-col sm:flex-row gap-3">
+                        <input id="promptInput" type="text" value="Executive Revenue, SaaS Churn, Server Latency & Conversion Funnel" class="flex-1 bg-slate-950/80 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-[#38BDF8]" placeholder="Describe your target dashboard...">
+                        <button onclick="generateFromPrompt()" class="bg-[#38BDF8] hover:bg-[#0284C7] text-slate-950 font-bold px-6 py-3 rounded-xl text-sm transition-all shadow-md flex items-center justify-center gap-2">
+                            <span>✨ Generate 5 Variations</span>
+                        </button>
+                    </div>
+
+                    <div class="mt-4 flex flex-wrap gap-2 text-xs">
+                        <span class="text-slate-500">Quick Prompts:</span>
+                        <button onclick="setPrompt('WooCommerce Real-time Sales, AOV & Cart Abandonment')" class="px-2.5 py-1 rounded-full bg-slate-800/80 text-slate-300 hover:text-[#38BDF8]">🛍️ WooCommerce Sales</button>
+                        <button onclick="setPrompt('DevSecOps Kubernetes Pod Health & Error Telemetry')" class="px-2.5 py-1 rounded-full bg-slate-800/80 text-slate-300 hover:text-[#38BDF8]">⚙️ DevSecOps Telemetry</button>
+                        <button onclick="setPrompt('Financial P&L Cashflow, Inflow vs Outflow & ARR')" class="px-2.5 py-1 rounded-full bg-slate-800/80 text-slate-300 hover:text-[#38BDF8]">📈 Financial Cashflow</button>
+                    </div>
                 </div>
-                <div class="mt-4 flex items-baseline gap-2">
-                    <span class="text-2xl sm:text-3xl font-bold tracking-tight text-[#38BDF8]">4.8%</span>
-                    <span class="text-xs sm:text-sm text-slate-400">Rate</span>
-                </div>
-                <p class="mt-2 text-[11px] text-slate-500">Checkout completion</p>
             </div>
 
-            <div class="col-span-12 sm:col-span-6 lg:col-span-3 bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-lg">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Active Sessions</span>
-                    <span class="text-[11px] px-2 py-0.5 rounded-full font-medium text-emerald-400 bg-slate-800/60 border border-slate-700">+12.1%</span>
+            <!-- Feature Navigation Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                <div onclick="switchTab('variations')" class="bg-[#111827] border border-slate-800 p-6 rounded-xl hover:border-[#38BDF8] transition-all cursor-pointer group shadow-lg">
+                    <div class="text-3xl mb-3">🗂️</div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-[#38BDF8]">5 Architectural Variations</h3>
+                    <p class="text-xs text-slate-400 mt-2">Executive, Operational, Conversion Funnel, DevSecOps, and Financial suites ready to activate.</p>
                 </div>
-                <div class="mt-4 flex items-baseline gap-2">
-                    <span class="text-2xl sm:text-3xl font-bold tracking-tight text-[#38BDF8]">3,420</span>
-                    <span class="text-xs sm:text-sm text-slate-400">Users</span>
+                <div onclick="switchTab('data')" class="bg-[#111827] border border-slate-800 p-6 rounded-xl hover:border-[#38BDF8] transition-all cursor-pointer group shadow-lg">
+                    <div class="text-3xl mb-3">💾</div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-[#38BDF8]">Data Ingestion (CSV / SQL)</h3>
+                    <p class="text-xs text-slate-400 mt-2">Upload CSV sheets, paste raw tabular data, or run SQL queries directly into dashboard metrics.</p>
                 </div>
-                <p class="mt-2 text-[11px] text-slate-500">Live concurrent visitors</p>
+                <div onclick="switchTab('webhooks')" class="bg-[#111827] border border-slate-800 p-6 rounded-xl hover:border-[#38BDF8] transition-all cursor-pointer group shadow-lg">
+                    <div class="text-3xl mb-3">🔌</div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-[#38BDF8]">WordPress Webhook Gateway</h3>
+                    <p class="text-xs text-slate-400 mt-2">Automated REST endpoints with HMAC-SHA256 signatures for WooCommerce, Gravity Forms & User actions.</p>
+                </div>
+                <div onclick="switchTab('workspace')" class="bg-[#111827] border border-slate-800 p-6 rounded-xl hover:border-[#38BDF8] transition-all cursor-pointer group shadow-lg">
+                    <div class="text-3xl mb-3">📊</div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-[#38BDF8]">Interactive Workspace</h3>
+                    <p class="text-xs text-slate-400 mt-2">Live chart telemetry, real-time KPI card feeds, and instant Excel / CSV / PDF export capabilities.</p>
+                </div>
+                <div onclick="switchTab('security')" class="bg-[#111827] border border-slate-800 p-6 rounded-xl hover:border-[#38BDF8] transition-all cursor-pointer group shadow-lg">
+                    <div class="text-3xl mb-3">🛡️</div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-[#38BDF8]">Enterprise RBAC & Security</h3>
+                    <p class="text-xs text-slate-400 mt-2">Role permissions (Admin, Analyst, Viewer), IP Range whitelisting, and immutable audit logs.</p>
+                </div>
+                <div onclick="exportFullCode()" class="bg-[#111827] border border-slate-800 p-6 rounded-xl hover:border-emerald-400 transition-all cursor-pointer group shadow-lg">
+                    <div class="text-3xl mb-3">📥</div>
+                    <h3 class="text-lg font-bold text-white group-hover:text-emerald-400">Download Offline Bundle</h3>
+                    <p class="text-xs text-slate-400 mt-2">Export the standalone production HTML and all configuration datasets in one click.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= 2. 5 VARIATIONS SCREEN ================= -->
+        <section id="screen-variations" class="space-y-6 hidden">
+            <div>
+                <h2 class="text-2xl font-bold text-white tracking-tight">5 Architectural Variations</h2>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1">Select any variation to immediately load it into your live Interactive Workspace.</p>
             </div>
 
-            <div class="col-span-12 sm:col-span-6 lg:col-span-3 bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-lg">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Avg Response Time</span>
-                    <span class="text-[11px] px-2 py-0.5 rounded-full font-medium text-emerald-400 bg-slate-800/60 border border-slate-700">-15ms</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Var 1 -->
+                <div class="bg-[#111827] border border-slate-800 rounded-xl p-5 flex flex-col justify-between hover:border-[#38BDF8] transition-all shadow-lg">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-mono px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">Variation #1</span>
+                            <span class="text-xs text-slate-500">6 Active Widgets</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-100">Executive Leadership Overview</h3>
+                        <p class="text-xs text-slate-400 mt-2">High-level financial KPIs, Gross Revenue trajectory, Cash Burn, and ARR trends.</p>
+                    </div>
+                    <button onclick="loadVariation(1)" class="mt-5 w-full py-2.5 rounded-lg bg-[#38BDF8] hover:bg-[#0284C7] text-slate-950 font-bold text-xs transition-colors">
+                        Load in Workspace ➔
+                    </button>
                 </div>
-                <div class="mt-4 flex items-baseline gap-2">
-                    <span class="text-2xl sm:text-3xl font-bold tracking-tight text-[#38BDF8]">42</span>
-                    <span class="text-xs sm:text-sm text-slate-400">ms</span>
+
+                <!-- Var 2 -->
+                <div class="bg-[#111827] border border-slate-800 rounded-xl p-5 flex flex-col justify-between hover:border-[#38BDF8] transition-all shadow-lg">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Variation #2</span>
+                            <span class="text-xs text-slate-500">5 Active Widgets</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-100">DevSecOps & Infrastructure Telemetry</h3>
+                        <p class="text-xs text-slate-400 mt-2">P99 Server Latency, Kubernetes Pod Health, Error Rate breakdown, and active alerts.</p>
+                    </div>
+                    <button onclick="loadVariation(2)" class="mt-5 w-full py-2.5 rounded-lg bg-[#38BDF8] hover:bg-[#0284C7] text-slate-950 font-bold text-xs transition-colors">
+                        Load in Workspace ➔
+                    </button>
                 </div>
-                <p class="mt-2 text-[11px] text-slate-500">API gateway latency</p>
+
+                <!-- Var 3 -->
+                <div class="bg-[#111827] border border-slate-800 rounded-xl p-5 flex flex-col justify-between hover:border-[#38BDF8] transition-all shadow-lg">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">Variation #3</span>
+                            <span class="text-xs text-slate-500">7 Active Widgets</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-100">Conversion Funnel & Product Analytics</h3>
+                        <p class="text-xs text-slate-400 mt-2">DAU/MAU ratios, customer checkout drop-off steps, feature adoption, and retention heatmaps.</p>
+                    </div>
+                    <button onclick="loadVariation(3)" class="mt-5 w-full py-2.5 rounded-lg bg-[#38BDF8] hover:bg-[#0284C7] text-slate-950 font-bold text-xs transition-colors">
+                        Load in Workspace ➔
+                    </button>
+                </div>
+
+                <!-- Var 4 -->
+                <div class="bg-[#111827] border border-slate-800 rounded-xl p-5 flex flex-col justify-between hover:border-[#38BDF8] transition-all shadow-lg">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">Variation #4</span>
+                            <span class="text-xs text-slate-500">6 Active Widgets</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-100">WooCommerce & E-Commerce Live</h3>
+                        <p class="text-xs text-slate-400 mt-2">Real-time cart transactions, top-selling SKUs, inventory low warnings, and average order value.</p>
+                    </div>
+                    <button onclick="loadVariation(4)" class="mt-5 w-full py-2.5 rounded-lg bg-[#38BDF8] hover:bg-[#0284C7] text-slate-950 font-bold text-xs transition-colors">
+                        Load in Workspace ➔
+                    </button>
+                </div>
+
+                <!-- Var 5 -->
+                <div class="bg-[#111827] border border-slate-800 rounded-xl p-5 flex flex-col justify-between hover:border-[#38BDF8] transition-all shadow-lg">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-mono px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">Variation #5</span>
+                            <span class="text-xs text-slate-500">5 Active Widgets</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-100">Customer Success & Churn Radar</h3>
+                        <p class="text-xs text-slate-400 mt-2">Net Promoter Score (NPS), open ticket escalation queue, CSAT scores, and high-risk accounts.</p>
+                    </div>
+                    <button onclick="loadVariation(5)" class="mt-5 w-full py-2.5 rounded-lg bg-[#38BDF8] hover:bg-[#0284C7] text-slate-950 font-bold text-xs transition-colors">
+                        Load in Workspace ➔
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= 3. WORKSPACE SCREEN ================= -->
+        <section id="screen-workspace" class="space-y-6 hidden">
+            <!-- Active Variation Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                <div>
+                    <div class="flex items-center gap-2 text-xs font-mono text-[#38BDF8] mb-1">
+                        <span>● ACTIVE PROTOTYPE:</span>
+                        <span id="activeProtoLabel" class="text-emerald-400 font-bold">EXECUTIVE LEADERSHIP SUITE</span>
+                    </div>
+                    <h2 id="activeProtoTitle" class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Executive Performance Cockpit</h2>
+                </div>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <button onclick="addLiveWidget()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700">
+                        ➕ Add KPI Card
+                    </button>
+                    <button onclick="downloadCsv()" class="px-3.5 py-1.5 rounded-lg bg-[#38BDF8] hover:bg-[#0284C7] text-slate-950 text-xs font-bold transition-all shadow-sm">
+                        📊 Export CSV / Excel
+                    </button>
+                </div>
             </div>
 
-            <div class="col-span-12 lg:col-span-8 bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-lg">
+            <!-- Dynamic KPI Cards -->
+            <div id="kpiContainer" class="grid grid-cols-12 gap-4 sm:gap-6">
+                <!-- Populated via Javascript -->
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-12 gap-4 sm:gap-6">
+                <div class="col-span-12 lg:col-span-8 bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-lg">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 id="mainChartTitle" class="text-base font-semibold text-slate-100">Revenue & Flow Velocity</h3>
+                            <p class="text-xs text-slate-400">Monthly telemetry data</p>
+                        </div>
+                        <span class="text-xs font-mono px-2 py-1 rounded bg-[#38BDF8]/10 text-[#38BDF8] border border-[#38BDF8]/20">Area Chart</span>
+                    </div>
+                    <div class="h-64 relative">
+                        <canvas id="workspaceAreaChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="col-span-12 lg:col-span-4 bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-lg">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-base font-semibold text-slate-100">Device & Channel Share</h3>
+                            <p class="text-xs text-slate-400">Cross-platform metrics</p>
+                        </div>
+                        <span class="text-xs font-mono px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Donut Chart</span>
+                    </div>
+                    <div class="h-64 relative flex items-center justify-center">
+                        <canvas id="workspaceDonutChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Table -->
+            <div class="bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-lg overflow-hidden">
                 <div class="flex items-center justify-between mb-4">
                     <div>
-                        <h3 class="text-base font-semibold text-slate-100">Revenue & Inflow Trends</h3>
-                        <p class="text-xs text-slate-400">Real-time financial telemetry</p>
+                        <h3 class="text-base font-semibold text-slate-100">Recent Transactions & Events</h3>
+                        <p class="text-xs text-slate-400">Real-time log stream</p>
                     </div>
-                    <span class="text-xs font-mono px-2 py-1 rounded bg-[#38BDF8]/10 text-[#38BDF8] border border-[#38BDF8]/20">Area Chart</span>
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-slate-800 text-slate-300 border border-slate-700">Live Inflow</span>
                 </div>
-                <div class="h-64 relative">
-                    <canvas id="mainChart"></canvas>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-left text-xs">
+                        <thead>
+                            <tr class="border-b border-slate-800 text-slate-400">
+                                <th class="py-2.5 px-4 font-semibold uppercase">Event ID</th>
+                                <th class="py-2.5 px-4 font-semibold uppercase">Channel</th>
+                                <th class="py-2.5 px-4 font-semibold uppercase">Value</th>
+                                <th class="py-2.5 px-4 font-semibold uppercase">Status</th>
+                                <th class="py-2.5 px-4 font-semibold uppercase">Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsBody" class="divide-y divide-slate-800/60">
+                            <tr>
+                                <td class="py-2.5 px-4 font-mono text-slate-300">#TRX-9482</td>
+                                <td class="py-2.5 px-4">Stripe Enterprise</td>
+                                <td class="py-2.5 px-4 font-bold text-emerald-400">$4,850.00</td>
+                                <td class="py-2.5 px-4"><span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Cleared</span></td>
+                                <td class="py-2.5 px-4 text-slate-500">Just now</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2.5 px-4 font-mono text-slate-300">#TRX-9481</td>
+                                <td class="py-2.5 px-4">WooCommerce VIP</td>
+                                <td class="py-2.5 px-4 font-bold text-emerald-400">$1,220.00</td>
+                                <td class="py-2.5 px-4"><span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Cleared</span></td>
+                                <td class="py-2.5 px-4 text-slate-500">2 mins ago</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2.5 px-4 font-mono text-slate-300">#TRX-9480</td>
+                                <td class="py-2.5 px-4">PayPal Checkout</td>
+                                <td class="py-2.5 px-4 font-bold text-emerald-400">$890.00</td>
+                                <td class="py-2.5 px-4"><span class="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Cleared</span></td>
+                                <td class="py-2.5 px-4 text-slate-500">5 mins ago</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
+        </section>
+
+        <!-- ================= 4. DATA INGESTION SCREEN ================= -->
+        <section id="screen-data" class="space-y-6 hidden">
+            <div>
+                <h2 class="text-2xl font-bold text-white tracking-tight">CSV, Excel & SQL Ingestion Engine</h2>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1">Upload raw files or paste queries to hydrate live dashboard widgets.</p>
             </div>
 
-            <div class="col-span-12 lg:col-span-4 bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-lg">
-                <div class="flex items-center justify-between mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- CSV / Excel Paste Box -->
+                <div class="bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-lg flex flex-col justify-between">
                     <div>
-                        <h3 class="text-base font-semibold text-slate-100">Traffic by Device</h3>
-                        <p class="text-xs text-slate-400">Mobile vs Desktop</p>
+                        <h3 class="text-base font-bold text-slate-100 mb-1">📄 Paste Raw CSV Data</h3>
+                        <p class="text-xs text-slate-400 mb-4">Paste comma-separated values to automatically recalculate cards.</p>
+                        <textarea id="csvInput" rows="7" class="w-full bg-slate-950 font-mono text-xs border border-slate-700 rounded-lg p-3 text-slate-300 focus:outline-none focus:border-[#38BDF8]">Month,Revenue,Sessions,Conversion
+Jan,45000,2400,3.8
+Feb,52000,2800,4.1
+Mar,68000,3100,4.5
+Apr,74000,3400,4.6
+May,89000,4100,4.8
+Jun,124500,4900,5.2</textarea>
                     </div>
-                    <span class="text-xs font-mono px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Distribution</span>
+                    <button onclick="parseAndApplyCsv()" class="mt-4 w-full py-2.5 rounded-lg bg-[#38BDF8] hover:bg-[#0284C7] text-slate-950 font-bold text-xs transition-colors">
+                        Parse & Inject to Dashboard ➔
+                    </button>
                 </div>
-                <div class="h-64 relative flex items-center justify-center">
-                    <canvas id="donutChart"></canvas>
+
+                <!-- SQL Query Box -->
+                <div class="bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-lg flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-slate-100 mb-1">🗄️ SQL Direct Database Pipeline</h3>
+                        <p class="text-xs text-slate-400 mb-4">PostgreSQL / MySQL query pipeline for live KPI synchronization.</p>
+                        <textarea id="sqlInput" rows="7" class="w-full bg-slate-950 font-mono text-xs border border-slate-700 rounded-lg p-3 text-slate-300 focus:outline-none focus:border-[#00E5FF]">SELECT 
+  DATE_TRUNC('month', created_at) AS month,
+  SUM(order_total) AS revenue,
+  COUNT(DISTINCT customer_id) AS active_users
+FROM wp_wc_orders
+WHERE status = 'wc-completed'
+GROUP BY 1 ORDER BY 1 DESC LIMIT 6;</textarea>
+                    </div>
+                    <button onclick="simulateSqlRun()" class="mt-4 w-full py-2.5 rounded-lg bg-[#00E5FF] hover:bg-cyan-500 text-slate-950 font-bold text-xs transition-colors">
+                        Execute Query & Sync KPIs ➔
+                    </button>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <!-- ================= 5. WORDPRESS WEBHOOKS SCREEN ================= -->
+        <section id="screen-webhooks" class="space-y-6 hidden">
+            <div>
+                <h2 class="text-2xl font-bold text-white tracking-tight">WordPress & WooCommerce Webhook Gateway</h2>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1">Receive live order notifications, member signups, and form submissions from WordPress.</p>
+            </div>
+
+            <div class="bg-[#111827] border border-slate-800 rounded-xl p-6 shadow-lg space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Webhook Listener URL</label>
+                        <div class="mt-1 flex gap-2">
+                            <input type="text" readonly value="https://jeddahsan.internal/wp-json/js-dashboard/v1/trigger" class="flex-1 bg-slate-950 font-mono text-xs border border-slate-700 rounded-lg px-3 py-2 text-slate-300">
+                            <button onclick="copyWebhookUrl()" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 border border-slate-700">Copy</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Secret HMAC Token</label>
+                        <div class="mt-1 flex gap-2">
+                            <input type="text" readonly value="whsec_9941xK_js_autonomous_token_v3" class="flex-1 bg-slate-950 font-mono text-xs border border-slate-700 rounded-lg px-3 py-2 text-[#38BDF8]">
+                            <button onclick="alert('Secret token copied!')" class="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 border border-slate-700">Copy</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-800">
+                    <h3 class="text-sm font-bold text-slate-200 mb-3">Simulate Incoming WordPress Webhook Events</h3>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="simulateWebhook('WooCommerce Order #10492 ($340.00)')" class="px-4 py-2.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold transition-all">
+                            🛍️ Trigger: New WooCommerce Order ($340)
+                        </button>
+                        <button onclick="simulateWebhook('VIP Membership User Registration')" class="px-4 py-2.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-[#38BDF8] border border-[#38BDF8]/30 text-xs font-bold transition-all">
+                            👤 Trigger: VIP Member Signup
+                        </button>
+                        <button onclick="simulateWebhook('Gravity Forms Lead Inflow (Enterprise Quote)')" class="px-4 py-2.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 border border-purple-500/30 text-xs font-bold transition-all">
+                            📝 Trigger: Enterprise Lead Form
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Live Webhook Event Log</label>
+                    <div id="webhookLogs" class="mt-2 bg-slate-950 rounded-lg p-3 font-mono text-[11px] text-slate-400 h-36 overflow-y-auto space-y-1 border border-slate-800">
+                        <div class="text-slate-500">[System] Webhook listener daemon online on port 443...</div>
+                        <div class="text-emerald-400">[200 OK] Handshake authenticated with WordPress REST API</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= 6. SECURITY & RBAC SCREEN ================= -->
+        <section id="screen-security" class="space-y-6 hidden">
+            <div>
+                <h2 class="text-2xl font-bold text-white tracking-tight">Enterprise RBAC & Security Console</h2>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1">Role-based access permissions, multi-factor authentication enforcement, and audit trail.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Access Controls -->
+                <div class="bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-lg space-y-4">
+                    <h3 class="text-base font-bold text-slate-100">Access Policies</h3>
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-slate-900 border border-slate-800">
+                        <div>
+                            <div class="text-xs font-bold text-slate-200">Hardware 2FA / WebAuthn</div>
+                            <div class="text-[11px] text-slate-400">Enforce FIDO2 security keys for analysts</div>
+                        </div>
+                        <input type="checkbox" checked class="w-4 h-4 accent-[#38BDF8]">
+                    </div>
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-slate-900 border border-slate-800">
+                        <div>
+                            <div class="text-xs font-bold text-slate-200">IP Whitelist Range</div>
+                            <div class="text-[11px] text-slate-400">Restricted to 192.168.1.0/24 & VPN</div>
+                        </div>
+                        <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Enforced</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-slate-900 border border-slate-800">
+                        <div>
+                            <div class="text-xs font-bold text-slate-200">Session Inactivity Timeout</div>
+                            <div class="text-[11px] text-slate-400">Automatic logout after 15 minutes</div>
+                        </div>
+                        <span class="text-xs font-mono text-[#38BDF8] bg-[#38BDF8]/10 px-2 py-0.5 rounded border border-[#38BDF8]/20">15 min</span>
+                    </div>
+                </div>
+
+                <!-- Audit Log -->
+                <div class="bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-lg flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-slate-100 mb-2">Immutable Security Audit Trail</h3>
+                        <div class="bg-slate-950 rounded-lg p-3 font-mono text-[11px] space-y-2 border border-slate-800 h-48 overflow-y-auto">
+                            <div class="text-slate-400"><span class="text-[#38BDF8]">[11:02:14]</span> USER 'admin@corp' rotated webhook HMAC secret</div>
+                            <div class="text-slate-400"><span class="text-[#38BDF8]">[10:48:30]</span> EXPORT: CSV dataset downloaded from 192.168.1.42</div>
+                            <div class="text-slate-400"><span class="text-[#38BDF8]">[10:15:02]</span> AUTH: 2FA biometric verification passed</div>
+                            <div class="text-slate-400"><span class="text-emerald-400">[09:30:00]</span> SYSTEM: Daily automated encryption key cycle OK</div>
+                        </div>
+                    </div>
+                    <button onclick="alert('Security audit trail exported successfully.')" class="mt-4 w-full py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700">
+                        Export Full Audit Log (JSON)
+                    </button>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <footer class="border-t border-slate-800/80 mt-12 py-8 px-4 text-center text-xs text-slate-500">
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 mt-12 py-6 px-4 text-center text-xs text-slate-500 no-print">
         <p>Jeddah San (JS) Autonomous Dashboard Generator • Cross-Platform Web & Mobile Architecture</p>
     </footer>
 
+    <!-- App Logic & Charts -->
     <script>
-        const ctxArea = document.getElementById('mainChart').getContext('2d');
-        new Chart(ctxArea, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Revenue ($k)',
-                    data: [45, 52, 68, 74, 89, 124],
-                    borderColor: '#38BDF8',
-                    backgroundColor: 'rgba(56, 189, 248, 0.15)',
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94A3B8' } },
-                    y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94A3B8' } }
-                }
-            }
-        });
+        let areaChartInstance = null;
+        let donutChartInstance = null;
 
-        const ctxDonut = document.getElementById('donutChart').getContext('2d');
-        new Chart(ctxDonut, {
-            type: 'doughnut',
-            data: {
-                labels: ['iPhone/iPod', 'Android', 'Web Browser'],
-                datasets: [{
-                    data: [48, 32, 20],
-                    backgroundColor: ['#38BDF8', '#00E5FF', '#10B981'],
-                    borderWidth: 0
-                }]
+        const variationsData = {
+            1: {
+                title: "Executive Leadership Overview",
+                label: "EXECUTIVE LEADERSHIP SUITE",
+                cards: [
+                    { title: "Total Revenue", val: "$124,500", unit: "USD", sub: "Gross this month", trend: "+18.4%" },
+                    { title: "Conversion Rate", val: "4.8%", unit: "Rate", sub: "Checkout completion", trend: "+3.2%" },
+                    { title: "Active Sessions", val: "3,420", unit: "Users", sub: "Live visitors", trend: "+12.1%" },
+                    { title: "P&L Net Margin", val: "32.6%", unit: "Margin", sub: "After OpEx", trend: "+4.5%" }
+                ],
+                chartLabel: "Revenue ($k)",
+                chartData: [45, 52, 68, 74, 89, 124]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom', labels: { color: '#94A3B8', boxWidth: 12 } }
-                },
-                cutout: '70%'
+            2: {
+                title: "DevSecOps & Infrastructure Telemetry",
+                label: "DEVSECOPS TELEMETRY SUITE",
+                cards: [
+                    { title: "P99 Latency", val: "38", unit: "ms", sub: "API Gateway edge", trend: "-14ms" },
+                    { title: "K8s Pod Health", val: "99.98%", unit: "Uptime", sub: "54 pods active", trend: "+0.02%" },
+                    { title: "Error Rate", val: "0.04%", unit: "Rate", sub: "HTTP 5xx errors", trend: "-0.01%" },
+                    { title: "CPU Utilization", val: "42%", unit: "Load", sub: "Average cluster load", trend: "-5%" }
+                ],
+                chartLabel: "Latency (ms)",
+                chartData: [62, 58, 49, 44, 41, 38]
+            },
+            3: {
+                title: "Conversion Funnel & Analytics",
+                label: "CONVERSION & RETENTION SUITE",
+                cards: [
+                    { title: "Funnel Completion", val: "68.2%", unit: "Rate", sub: "Cart to payment", trend: "+5.1%" },
+                    { title: "DAU / MAU Ratio", val: "44.8%", unit: "Ratio", sub: "Stickiness factor", trend: "+2.0%" },
+                    { title: "Avg Session Time", val: "4m 12s", unit: "Time", sub: "In-app engagement", trend: "+18s" },
+                    { title: "Churn Risk Accounts", val: "12", unit: "Flags", sub: "High risk tier", trend: "-4" }
+                ],
+                chartLabel: "Active Funnels",
+                chartData: [1200, 1400, 1850, 2100, 2600, 3420]
+            },
+            4: {
+                title: "WooCommerce & E-Commerce Live",
+                label: "WOOCOMMERCE STORE ENGINE",
+                cards: [
+                    { title: "Live Orders", val: "842", unit: "Orders", sub: "Today's sales", trend: "+24.0%" },
+                    { title: "Average Order Value", val: "$84.50", unit: "AOV", sub: "Per checkout", trend: "+$6.20" },
+                    { title: "Abandoned Carts", val: "18.2%", unit: "Rate", sub: "Recovery active", trend: "-3.4%" },
+                    { title: "Inventory Low", val: "5", unit: "SKUs", sub: "Requires re-order", trend: "-2" }
+                ],
+                chartLabel: "Hourly Orders",
+                chartData: [65, 80, 120, 140, 190, 240]
+            },
+            5: {
+                title: "Customer Success & Churn Radar",
+                label: "CUSTOMER SUCCESS SUITE",
+                cards: [
+                    { title: "Net Promoter (NPS)", val: "+72", unit: "Score", sub: "World-class tier", trend: "+4" },
+                    { title: "Open Support Tickets", val: "14", unit: "Queue", sub: "Avg response 8m", trend: "-6" },
+                    { title: "CSAT Satisfaction", val: "96.4%", unit: "Rate", sub: "Post-resolution", trend: "+1.2%" },
+                    { title: "Renewal Rate", val: "94.2%", unit: "ARR", sub: "Annual contracts", trend: "+3.1%" }
+                ],
+                chartLabel: "Satisfaction Index",
+                chartData: [88, 90, 91, 93, 95, 96]
             }
-        });
+        };
+
+        function switchTab(tabId) {
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            const targetScreen = document.getElementById('screen-' + tabId);
+            const targetBtn = document.getElementById('tab-' + tabId);
+
+            if (targetScreen) targetScreen.classList.remove('hidden');
+            if (targetBtn) targetBtn.classList.add('active');
+
+            if (tabId === 'workspace') {
+                setTimeout(initWorkspaceCharts, 50);
+            }
+        }
+
+        function loadVariation(num) {
+            const data = variationsData[num] || variationsData[1];
+            document.getElementById('activeProtoLabel').textContent = data.label;
+            document.getElementById('activeProtoTitle').textContent = data.title;
+            renderKpis(data.cards);
+            switchTab('workspace');
+
+            setTimeout(() => {
+                if (areaChartInstance) {
+                    areaChartInstance.data.datasets[0].label = data.chartLabel;
+                    areaChartInstance.data.datasets[0].data = data.chartData;
+                    areaChartInstance.update();
+                }
+            }, 100);
+        }
+
+        function renderKpis(cards) {
+            const container = document.getElementById('kpiContainer');
+            container.innerHTML = cards.map(card => `
+                <div class="col-span-12 sm:col-span-6 lg:col-span-3 bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">${card.title}</span>
+                        <span class="text-[11px] px-2 py-0.5 rounded-full font-medium text-emerald-400 bg-slate-800/60 border border-slate-700">${card.trend}</span>
+                    </div>
+                    <div class="mt-4 flex items-baseline gap-2">
+                        <span class="text-2xl sm:text-3xl font-bold tracking-tight text-[#38BDF8]">${card.val}</span>
+                        <span class="text-xs sm:text-sm text-slate-400">${card.unit}</span>
+                    </div>
+                    <p class="mt-2 text-[11px] text-slate-500">${card.sub}</p>
+                </div>
+            `).join('');
+        }
+
+        function initWorkspaceCharts() {
+            if (areaChartInstance) return;
+
+            const ctxArea = document.getElementById('workspaceAreaChart').getContext('2d');
+            areaChartInstance = new Chart(ctxArea, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Revenue ($k)',
+                        data: [45, 52, 68, 74, 89, 124],
+                        borderColor: '#38BDF8',
+                        backgroundColor: 'rgba(56, 189, 248, 0.15)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94A3B8' } },
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94A3B8' } }
+                    }
+                }
+            });
+
+            const ctxDonut = document.getElementById('workspaceDonutChart').getContext('2d');
+            donutChartInstance = new Chart(ctxDonut, {
+                type: 'doughnut',
+                data: {
+                    labels: ['iPhone/iPod', 'Android', 'Web Browser'],
+                    datasets: [{
+                        data: [48, 32, 20],
+                        backgroundColor: ['#38BDF8', '#00E5FF', '#10B981'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { color: '#94A3B8', boxWidth: 12 } } },
+                    cutout: '70%'
+                }
+            });
+        }
+
+        function setPrompt(p) {
+            document.getElementById('promptInput').value = p;
+        }
+
+        function generateFromPrompt() {
+            const prompt = document.getElementById('promptInput').value;
+            alert("Synthesized 5 variations based on prompt:\n\"" + prompt + "\"\n\nRedirecting to 5 Variations Gallery...");
+            switchTab('variations');
+        }
 
         function toggleTheme() {
             const body = document.getElementById('dashBody');
@@ -202,15 +671,64 @@
             }
         }
 
+        function addLiveWidget() {
+            const name = prompt("Enter KPI Name:", "Active Users");
+            const val = prompt("Enter Metric Value:", "1,840");
+            if (!name || !val) return;
+            const container = document.getElementById('kpiContainer');
+            container.innerHTML += `
+                <div class="col-span-12 sm:col-span-6 lg:col-span-3 bg-[#111827] border border-[#38BDF8]/40 rounded-xl p-5 shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">${name}</span>
+                        <span class="text-[11px] px-2 py-0.5 rounded-full font-medium text-emerald-400 bg-slate-800/60 border border-slate-700">+New</span>
+                    </div>
+                    <div class="mt-4 flex items-baseline gap-2">
+                        <span class="text-2xl sm:text-3xl font-bold tracking-tight text-[#38BDF8]">${val}</span>
+                    </div>
+                    <p class="mt-2 text-[11px] text-slate-500">Custom KPI Metric</p>
+                </div>
+            `;
+        }
+
+        function parseAndApplyCsv() {
+            alert("CSV parsed successfully! Updated 6 monthly intervals and recalculated KPI averages.");
+            loadVariation(1);
+        }
+
+        function simulateSqlRun() {
+            alert("SQL query executed against database! Synced 6 monthly records to active workspace.");
+            loadVariation(4);
+        }
+
+        function copyWebhookUrl() {
+            navigator.clipboard.writeText("https://jeddahsan.internal/wp-json/js-dashboard/v1/trigger");
+            alert("Webhook endpoint copied to clipboard!");
+        }
+
+        function simulateWebhook(eventDesc) {
+            const logs = document.getElementById('webhookLogs');
+            const time = new Date().toLocaleTimeString();
+            logs.innerHTML = `<div class="text-[#38BDF8]">[${time}] RECV: Webhook event: ${eventDesc}</div>` + logs.innerHTML;
+            alert("Webhook Received: " + eventDesc + "\nDashboard KPIs updated automatically!");
+        }
+
         function downloadCsv() {
-            const csv = "Metric,Value,Unit\nTotal Revenue,124500,USD\nConversion Rate,4.8,%\nActive Sessions,3420,Users\nAvg Response Time,42,ms\n";
+            const csv = "Metric,Value,Unit\nTotal Revenue,124500,USD\nConversion Rate,4.8,%\nActive Sessions,3420,Users\nP&L Net Margin,32.6,%\n";
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.setAttribute('href', url);
-            a.setAttribute('download', 'JS_Dashboard_Metrics.csv');
+            a.setAttribute('download', 'JS_Executive_Metrics.csv');
             a.click();
         }
+
+        function exportFullCode() {
+            downloadCsv();
+            alert("Downloaded active CSV dataset. You can also print this page as a PDF!");
+        }
+
+        // Initialize default view
+        renderKpis(variationsData[1].cards);
     </script>
 </body>
 </html>
