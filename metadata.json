@@ -1,0 +1,6 @@
+{
+  "name": "JS Dashboard",
+  "description": "Enterprise AI dashboard generator by Jeddah San with real-time CSV/Excel/SQL data integration, 5-variant generation, widget customization, Excel/HTML export, and WordPress webhooks.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

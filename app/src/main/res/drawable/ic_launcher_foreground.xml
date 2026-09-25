@@ -1,0 +1,47 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Top-left metric card -->
+    <path
+        android:fillColor="#1E293B"
+        android:pathData="M24,24h26a4,4 0 0,1 4,4v20a4,4 0 0,1 -4,4h-26a4,4 0 0,1 -4,-4v-20a4,4 0 0,1 4,-4z" />
+    <path
+        android:fillColor="#38BDF8"
+        android:pathData="M27,29h12v3h-12z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M27,35h18v4h-18z" />
+
+    <!-- Top-right metric card with sparkline -->
+    <path
+        android:fillColor="#1E293B"
+        android:pathData="M58,24h26a4,4 0 0,1 4,4v20a4,4 0 0,1 -4,4h-26a4,4 0 0,1 -4,-4v-20a4,4 0 0,1 4,-4z" />
+    <path
+        android:fillColor="#38BDF8"
+        android:pathData="M61,29h10v3h-10z" />
+    <path
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M62,43 L69,38 L75,41 L81,33" />
+
+    <!-- Bottom main analytics graph card -->
+    <path
+        android:fillColor="#161E2E"
+        android:strokeColor="#38BDF8"
+        android:strokeWidth="1.5"
+        android:pathData="M24,56h60a4,4 0 0,1 4,4v24a4,4 0 0,1 -4,4h-60a4,4 0 0,1 -4,-4v-24a4,4 0 0,1 4,-4z" />
+    <!-- Bar charts -->
+    <path
+        android:fillColor="#38BDF8"
+        android:pathData="M30,78h6v6h-6z M40,71h6v13h-6z M50,65h6v19h-6z M60,68h6v16h-6z M70,61h6v23h-6z" />
+    <!-- Accent line overlay -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M33,76 L43,69 L53,63 L63,66 L73,59" />
+</vector>
