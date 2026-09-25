@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0B0F17">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="JS Dashboard">
+    <title>JS Dashboard Generator - Live Web</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --sat: env(safe-area-inset-top, 0px);
+            --sab: env(safe-area-inset-bottom, 0px);
+        }
+        body {
+            padding-top: var(--sat);
+            padding-bottom: var(--sab);
+            -webkit-tap-highlight-color: transparent;
+        }
+        @media print {
+            body { background: white !important; color: black !important; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body id="dashBody" class="bg-[#0B0F17] text-[#F8FAFC] min-h-screen font-sans antialiased transition-colors duration-200">
+    <header class="border-b border-slate-800 bg-[#0B0F17]/95 backdrop-blur sticky top-0 z-50 px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3 no-print">
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-[#38BDF8]/20 border border-[#38BDF8] flex items-center justify-center font-bold text-[#38BDF8] text-lg">
+                JS
+            </div>
+            <div>
+                <h1 class="text-sm sm:text-base font-bold text-slate-100 tracking-tight">JS (Jeddah San) Dashboard</h1>
+                <p class="text-[11px] text-slate-400">Android • iPhone • iPod • Web Browser</p>
+            </div>
+        </div>
+
+        <div class="flex items-center flex-wrap gap-2">
+            <button onclick="toggleTheme()" class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/80 text-xs text-slate-300 hover:text-white transition-colors">
+                🌓 Toggle Theme
+            </button>
+            <button onclick="window.print()" class="px-3 py-1.5 rounded-lg border border-slate-700 hover:border-slate-500 bg-slate-800/80 text-xs font-medium text-slate-200 transition-colors">
+                🖨️ Print / PDF
+            </button>
+            <button onclick="downloadCsv()" class="px-3.5 py-1.5 rounded-lg bg-[#38BDF8] hover:bg-[#0284C7] text-slate-950 text-xs font-bold transition-colors">
+                📊 Export CSV
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <div class="mb-6 sm:mb-8">
+            <div class="flex flex-wrap items-center gap-2 text-xs font-mono text-[#38BDF8] mb-1">
+                <span>⚡ LIVE SYSTEM ACTIVE</span>
+                <span>•</span>
+                <span class="text-emerald-400">● MULTI-DEVICE RESPONSIVE</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight">Enterprise Autonomous Analytics</h2>
+            <p class="text-xs sm:text-sm text-slate-400 mt-1 max-w-3xl">High-performance cross-platform dashboard for Android, iOS, and Web browsers.</p>
+        </div>
+
+        <div class="grid grid-cols-12 gap-4 sm:gap-6">
+            <div class="col-span-12 sm:col-span-6 lg:col-span-3 bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Total Revenue</span>
+                    <span class="text-[11px] px-2 py-0.5 rounded-full font-medium text-emerald-400 bg-slate-800/60 border border-slate-700">+18.4%</span>
+                </div>
+                <div class="mt-4 flex items-baseline gap-2">
+                    <span class="text-2xl sm:text-3xl font-bold tracking-tight text-[#38BDF8]">$124,500</span>
+                    <span class="text-xs sm:text-sm text-slate-400">USD</span>
+                </div>
+                <p class="mt-2 text-[11px] text-slate-500">Gross revenue this period</p>
+            </div>
+
+            <div class="col-span-12 sm:col-span-6 lg:col-span-3 bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Conversion Rate</span>
+                    <span class="text-[11px] px-2 py-0.5 rounded-full font-medium text-emerald-400 bg-slate-800/60 border border-slate-700">+3.2%</span>
+                </div>
+                <div class="mt-4 flex items-baseline gap-2">
+                    <span class="text-2xl sm:text-3xl font-bold tracking-tight text-[#38BDF8]">4.8%</span>
+                    <span class="text-xs sm:text-sm text-slate-400">Rate</span>
+                </div>
+                <p class="mt-2 text-[11px] text-slate-500">Checkout completion</p>
+            </div>
+
+            <div class="col-span-12 sm:col-span-6 lg:col-span-3 bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Active Sessions</span>
+                    <span class="text-[11px] px-2 py-0.5 rounded-full font-medium text-emerald-400 bg-slate-800/60 border border-slate-700">+12.1%</span>
+                </div>
+                <div class="mt-4 flex items-baseline gap-2">
+                    <span class="text-2xl sm:text-3xl font-bold tracking-tight text-[#38BDF8]">3,420</span>
+                    <span class="text-xs sm:text-sm text-slate-400">Users</span>
+                </div>
+                <p class="mt-2 text-[11px] text-slate-500">Live concurrent visitors</p>
+            </div>
+
+            <div class="col-span-12 sm:col-span-6 lg:col-span-3 bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <span class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Avg Response Time</span>
+                    <span class="text-[11px] px-2 py-0.5 rounded-full font-medium text-emerald-400 bg-slate-800/60 border border-slate-700">-15ms</span>
+                </div>
+                <div class="mt-4 flex items-baseline gap-2">
+                    <span class="text-2xl sm:text-3xl font-bold tracking-tight text-[#38BDF8]">42</span>
+                    <span class="text-xs sm:text-sm text-slate-400">ms</span>
+                </div>
+                <p class="mt-2 text-[11px] text-slate-500">API gateway latency</p>
+            </div>
+
+            <div class="col-span-12 lg:col-span-8 bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-base font-semibold text-slate-100">Revenue & Inflow Trends</h3>
+                        <p class="text-xs text-slate-400">Real-time financial telemetry</p>
+                    </div>
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-[#38BDF8]/10 text-[#38BDF8] border border-[#38BDF8]/20">Area Chart</span>
+                </div>
+                <div class="h-64 relative">
+                    <canvas id="mainChart"></canvas>
+                </div>
+            </div>
+
+            <div class="col-span-12 lg:col-span-4 bg-[#111827] border border-slate-800 rounded-xl p-5 shadow-lg">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-base font-semibold text-slate-100">Traffic by Device</h3>
+                        <p class="text-xs text-slate-400">Mobile vs Desktop</p>
+                    </div>
+                    <span class="text-xs font-mono px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Distribution</span>
+                </div>
+                <div class="h-64 relative flex items-center justify-center">
+                    <canvas id="donutChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="border-t border-slate-800/80 mt-12 py-8 px-4 text-center text-xs text-slate-500">
+        <p>Jeddah San (JS) Autonomous Dashboard Generator • Cross-Platform Web & Mobile Architecture</p>
+    </footer>
+
+    <script>
+        const ctxArea = document.getElementById('mainChart').getContext('2d');
+        new Chart(ctxArea, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Revenue ($k)',
+                    data: [45, 52, 68, 74, 89, 124],
+                    borderColor: '#38BDF8',
+                    backgroundColor: 'rgba(56, 189, 248, 0.15)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94A3B8' } },
+                    y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94A3B8' } }
+                }
+            }
+        });
+
+        const ctxDonut = document.getElementById('donutChart').getContext('2d');
+        new Chart(ctxDonut, {
+            type: 'doughnut',
+            data: {
+                labels: ['iPhone/iPod', 'Android', 'Web Browser'],
+                datasets: [{
+                    data: [48, 32, 20],
+                    backgroundColor: ['#38BDF8', '#00E5FF', '#10B981'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#94A3B8', boxWidth: 12 } }
+                },
+                cutout: '70%'
+            }
+        });
+
+        function toggleTheme() {
+            const body = document.getElementById('dashBody');
+            if (body.classList.contains('bg-[#0B0F17]')) {
+                body.classList.replace('bg-[#0B0F17]', 'bg-slate-50');
+                body.classList.replace('text-[#F8FAFC]', 'text-slate-900');
+            } else {
+                body.classList.replace('bg-slate-50', 'bg-[#0B0F17]');
+                body.classList.replace('text-slate-900', 'text-[#F8FAFC]');
+            }
+        }
+
+        function downloadCsv() {
+            const csv = "Metric,Value,Unit\nTotal Revenue,124500,USD\nConversion Rate,4.8,%\nActive Sessions,3420,Users\nAvg Response Time,42,ms\n";
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'JS_Dashboard_Metrics.csv');
+            a.click();
+        }
+    </script>
+</body>
+</html>
